@@ -1,0 +1,11 @@
+{
+  "name": "ADA - Architecture Decision Assistant",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bullseye",
+  "features": {},
+  "postCreateCommand": "corepack enable && pnpm i",
+  "customizations": {
+    "vscode": {
+      "settings": { "editor.formatOnSave": true }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+name: ADR format check
+on: [pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure ADRs contain key sections
+        run: |
+          fail=0
+          for f in $(git diff --name-only HEAD~1 | grep '^adr/.*\.md$' || true); do
+            echo "Checking $f"
+            grep -q "## Context and Problem Statement" "$f" || { echo "Missing Context in $f"; fail=1; }
+            grep -q "## Considered Options" "$f" || { echo "Missing Options in $f"; fail=1; }
+            grep -q "## Decision Outcome" "$f" || { echo "Missing Outcome in $f"; fail=1; }
+            grep -q "## Pros and Cons of the Options" "$f" || { echo "Missing Pros/Cons in $f"; fail=1; }
+          done
+          exit $fail

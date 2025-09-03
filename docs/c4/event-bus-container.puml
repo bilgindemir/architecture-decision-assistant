@@ -1,0 +1,35 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+title C4 — Container View: Event Bus with SNS + SQS
+
+Person(team, "Engineering Team", "Builds & operates services")
+System_Boundary(sys, "Scheduling Platform") {
+  Container(api, "API Gateway / Backend", "Node/Java", "Issues domain events")
+  ContainerDb(db, "Operational DB", "PostgreSQL", "OLTP store")
+
+  Container_Boundary(aws, "AWS (Managed)") {
+    Container(sns, "SNS Topic", "AWS SNS", "Fan-out for domain events")
+    ContainerQueue(sqsBilling, "Billing Queue", "AWS SQS (FIFO)", "Billing service consumer")
+    ContainerQueue(sqsAudit, "Audit Queue", "AWS SQS", "Audit trail consumer")
+    ContainerQueue(sqsNotify, "Notify Queue", "AWS SQS", "Notifications consumer")
+  }
+
+  Container(billing, "Billing Service", "Java/.NET", "Consumes billing events")
+  Container(audit, "Audit Service", "Python/Go", "Consumes audit events")
+  Container(notify, "Notification Service", "Node", "Sends user notifications")
+}
+
+Rel(team, api, "Deploys & maintains")
+Rel(api, sns, "Publishes events", "HTTPS (SigV4), TLS")
+Rel(sns, sqsBilling, "Fan-out")
+Rel(sns, sqsAudit, "Fan-out")
+Rel(sns, sqsNotify, "Fan-out")
+Rel_R(sqsBilling, billing, "Delivers messages")
+Rel_R(sqsAudit, audit, "Delivers messages")
+Rel_R(sqsNotify, notify, "Delivers messages")
+Rel(api, db, "Reads/Writes", "TLS")
+
+SHOW_LEGEND()
+@enduml

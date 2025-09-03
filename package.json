@@ -1,0 +1,26 @@
+{
+  "name": "architecture-decision-assistant",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "index": "tsx src/rag/indexer.ts",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.637.0",
+    "dotenv": "^16.4.5",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10",
+    "gray-matter": "^4.0.3",
+    "openai": "^4.57.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.12.12",
+    "@types/yargs": "^17.0.32",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4"
+  }
+}
